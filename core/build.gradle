@@ -1,0 +1,14 @@
+plugins {
+	id 'java'
+	id 'java-library'
+}
+
+group = 'com.example.foo'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+publishMavenJavaPublicationToMavenLocal.dependsOn jar

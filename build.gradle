@@ -1,0 +1,28 @@
+allprojects {
+	version = project.properties.getOrDefault('buildVersion', "0.0.0")
+}
+
+subprojects {
+	apply plugin: 'maven-publish'
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				artifact("${project.layout.buildDirectory.get().asFile}/libs/${project.name}-${project.version}.jar")
+				pom.withXml {
+					def dependenciesNode = asNode().appendNode('dependencies')
+
+					configurations.api.allDependencies.each { dep ->
+						def dependencyNode = dependenciesNode.appendNode('dependency')
+						dependencyNode.appendNode('groupId', dep.group)
+						dependencyNode.appendNode('artifactId', dep.name)
+						dependencyNode.appendNode('scope', 'compile')
+						if (dep.version != null) {
+							dependencyNode.appendNode('version', dep.version)
+						}
+					}
+				}
+			}
+		}
+	}
+}
